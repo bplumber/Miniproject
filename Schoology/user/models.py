@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
@@ -58,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Teacher(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True, related_name='teachers')
-    image = models.ImageField(null=True, blank=True, upload_to='teacher/')
+    image = models.ImageField(null=True, blank=True, upload_to='teacher/',default = 'teacher/default.png')
     name = models.CharField(max_length=100, null=True)
     phone = models.IntegerField(verbose_name='Phone Number',null=True,blank=True)
     
@@ -72,11 +73,11 @@ class Student(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True, related_name='students')
     name = models.CharField(max_length=100, null=True)
-    photo = models.ImageField(null=True, blank=True, upload_to='student/')
+    photo = models.ImageField(null=True, blank=True, upload_to='student/',default = 'student/picture1.jpg')
     phone = models.IntegerField(null=True,blank=True,verbose_name='Phone Number')
     
     def __str__(self):
-        return f"{self.user}"
+        return f"{self.name}"
 
     class Meta:
         verbose_name_plural = 'Student'
