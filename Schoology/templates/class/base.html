@@ -24,6 +24,22 @@
     </style>
 </head>
 
+<style>
+    body{
+        background-color: white;
+    }
+
+    nav {
+            background-color: #FFFFFF;
+            box-shadow: 0.5px 1px 4px 1px #e8cffc;
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1;
+        }
+</style>
+
 <body>
 
 
@@ -54,8 +70,8 @@
                         <a href="" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-plus"></i></a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             {% if user.is_teacher %}
-                            <a class="dropdown-item" href="#">Create Class</a> {% else %}
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#joinClass">Join Class</a> {% endif %}
+                            <a class="dropdown-item" href="{% url 'create-class' %}">Create Class</a> {% else %}
+                            <a class="dropdown-item" href = "#" data-toggle="modal" data-target="#joinClass">Join Class</a> {% endif %}
                         </div>
                     </li>
                     <li class="nav-item">

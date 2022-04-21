@@ -10,12 +10,14 @@
   </div>
 {% endblock %}
 {% block content %}
-<form method="POST">
+
+<form method="POST" style="width: 50%; margin-top: 2%;">
+  <h2>Create Assignment</h2>
     {% csrf_token %}
     {{form|crispy}}
     <label>Deadline</label><br>
-    <input type="datetime-local">
-    <input type="submit" value="Create">
+    <input type="datetime-local" style="border:1px solid #ced4da"><br><br>
+    <input class ="btn btn-primary" style="background-color: blueviolet; border: blueviolet; width: 100%;" type="submit" value="Create">
 </form> 
     
 {% endblock %}

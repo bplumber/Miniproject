@@ -1,10 +1,10 @@
-from pydoc import classname
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from user.models import Teacher
 from .forms import *
 from .models import *
+# from somewhere import handle_uploaded_file
 
 def getCode(self):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k = 6))
@@ -103,7 +103,13 @@ def createAssignment(request,name):
     if request.method == 'POST':
         form = AssignmentCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            a = Assignment()
+            a.classroom = Classroom.objects.get(className = name)
+            a.title = request.POST.get('title')
+            a.description = request.POST.get('description')
+            a.marks = request.POST.get('marks')
+            a.deadline = request.POST.get('deadline')
+            a.save()
             return redirect('assignment-list',name)
     else:
         form  = AssignmentCreationForm()
@@ -127,7 +133,7 @@ def assignmentDetails(request,name):
         return redirect('assignment-list',name)
     if request.method == 'POST':
         form = AssignmentSubmissionForm(request.POST,request.FILES)
-        print(request.POST)
+        print(request.FILES)
         if form.is_valid():
             stuWork = StudentWork()
             stuWork.student = Student.objects.get(user = request.user)

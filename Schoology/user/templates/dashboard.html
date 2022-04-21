@@ -21,7 +21,7 @@
 {% endblock %}
 {% block content %}
     <!-- <h1>Dashboard</h1> -->
-    <div class="row" style="margin-top:30px; margin:0;">
+    <div class="col" style="margin-top:30px; margin:0;">
         <div class="messages" style="position: absolute; top:12%; left:70%; z-index: 1;">
             {% for message in messages %}
             <div class="alert alert-primary" {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
@@ -32,10 +32,12 @@
     
             {% endfor %}
         </div>
-
+        <div style="margin-top: 20px">
+            <a href = "{% url 'explore' %}" class = "btn btn-primary" href="">Explore</a>
+        </div>
         {% for class in classes %}
         <div class="col-md-4 m-4 class_box">
-            <img src="{{ r.cover.url }}" alt="">
+            <img src="{% static 'others/class.jpg' %}" alt="">
             <img src="https://www.pngarts.com/files/11/Avatar-PNG-Transparent-Image.png" class="img" alt="">
     
             <h4>{{ class.0.className }}</h4>

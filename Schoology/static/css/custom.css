@@ -1,29 +1,39 @@
-{% load static %}
 /* All essential css of Website */
-body{
-    background-color: #edf8fe;
+
+body {
+    background-color: #FFFFFF;
 }
+
+
 /* width */
+
 ::-webkit-scrollbar {
     width: 10px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #edf8fe;
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
+}
+
+
+/* Track */
+
+ ::-webkit-scrollbar-track {
+    background: #E5E5E5;
+}
+
+
+/* Handle */
+
+ ::-webkit-scrollbar-thumb {
     background: #d4ebf7;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
+}
+
+
+/* Handle on hover */
+
+ ::-webkit-scrollbar-thumb:hover {
     background: #afd4e8;
-  }
-nav{
-    background-color: #edf8fe;
+}
+
+nav {
+    background-color: #E5E5E5;
     box-shadow: 0.5px 1px 4px 1px #d5eae1;
     position: sticky;
     top: 0;
@@ -32,30 +42,47 @@ nav{
     z-index: 1;
 }
 
-nav .logo{
-    width: 100%; height: 37px;
+nav .logo {
+    width: 100%;
+    height: 37px;
 }
-footer{
-    background-color: #ebf4fb; color:#8a8989; float: left;width: 100%;bottom: 0;
-    position: fixed;z-index: 200;
-    
+
+.btn-outline-success:hover {
+    background-color: #DCB4FC;
 }
+
+footer {
+    background-color: #FFFFFF;
+    color: #8a8989;
+    float: left;
+    width: 100%;
+    bottom: 0;
+    position: fixed;
+    z-index: 200;
+}
+
+element.style {
+    padding-top: 0;
+}
+
+
 /* end code of essential */
+
 .main_section {
-    padding:100px 50px;
-    
+    padding: 100px 50px;
 }
-.main_section h1{
+
+.main_section h1 {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: bolder;
     font-size: 4rem;
 }
 
-.main_section button{
+.main_section button {
     border: none;
-
 }
-.filebox{
+
+.filebox {
     background-color: white;
     border: 0.0625rem solid #dadce0;
     -webkit-border-radius: 0.5rem;
@@ -63,77 +90,80 @@ footer{
     padding: 1rem;
     width: 100%;
 }
-.sendbox{
-    background-color:transparent;
+
+.sendbox {
+    background-color: transparent;
     /* border: 0.0625rem solid #dadce0; */
     padding: 1rem;
     width: 100%;
     position: relative;
     height: auto;
-    overflow:visible;
-    
-
+    overflow: visible;
 }
-.sendbox form{
+
+.sendbox form {
     width: 85%;
     position: absolute;
-    right:0;
+    right: 0;
 }
-.sendbox img{
+
+.sendbox img {
     width: 10%;
     position: absolute;
     left: 10px;
     border-radius: 10px;
-
 }
-.sendbox button{
+
+.sendbox button {
     margin: 1px 10px;
-    border:none;
+    border: none;
     background: transparent;
     padding: 7px;
-    
 }
 
-.sendbox input[type=text]{
+.sendbox input[type=text] {
     width: 85%;
-    border:none;
+    border: none;
     border-bottom: 2px solid gray;
     border-radius: 0px;
     background-color: transparent;
 }
 
-.sendbox input[type=text]:focus{
-    border:none;
+.sendbox input[type=text]:focus {
+    border: none;
     border-bottom: 2px solid gray;
     border-radius: 0px;
     background: transparent;
 }
-.sendbox button i{
+
+.sendbox button i {
     font-size: 23px;
 }
-.stream{
-    margin:5px;
+
+.stream {
+    margin: 5px;
     background-color: white;
     border: 0.0625rem solid #dadce0;
     -webkit-border-radius: 0.5rem;
     border-radius: 0.5rem;
     padding: 1rem;
     width: 100%;
-    
-    
 }
-.stream img{
-    width:10%;
+
+.stream img {
+    width: 10%;
     border-radius: 10px;
     float: left;
 }
-.stream p{
+
+.stream p {
     margin: 5px 20px;
 }
 
 
 /* student dashbaord css of Class box */
-.class_box{
+
+.class_box {
     background-color: white;
     border: 0.0625rem solid #dadce0;
     -webkit-border-radius: 0.5rem;
@@ -144,24 +174,28 @@ footer{
     position: relative;
     height: auto;
 }
-.class_box h4{
-    margin-top:5px;
+
+.class_box h4 {
+    margin-top: 5px;
     font-family: Georgia, 'Times New Roman', Times, serif;
     margin-bottom: 0;
 }
-.class_box img{
+
+.class_box img {
     background-repeat: no-repeat;
     background-size: cover;
     width: 100%;
     margin: none;
 }
-.class_box .img{
-    position:absolute;
-    top:35%;
-    right:20px;
-    width:20%;
-    height:auto;
+
+.class_box .img {
+    position: absolute;
+    top: 35%;
+    right: 20px;
+    width: 20%;
+    height: auto;
 }
-.class_box a{
+
+.class_box a {
     margin-top: 3px !important;
 }

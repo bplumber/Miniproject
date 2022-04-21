@@ -50,6 +50,11 @@ def dashboard(request):
 
     return render(request,'dashboard.html',{'classes':classDetails})
 
+def explore(request):
+    if request.method == 'POST':
+        query = request.POST.get('query')
+        
+    return render(request,'explore.html')
 def register(request):
     
     if request.method == 'POST':

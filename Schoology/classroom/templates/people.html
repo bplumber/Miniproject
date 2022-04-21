@@ -21,33 +21,39 @@
 }
 {% endblock %}
 
+<!-- <div class="col-11 main_box" style="margin-left:60px ; background-color: #e2d1f1; border-radius: 10px; padding: 20px;">
+    <h2>{{ class.className }}</h2>
+    <p>{{ class.classDescription }}</p>
+    <h5 style="color:black;">Code : {{ class.classCode }}</h5>
+</div> -->
+
 {% block content %}
 
-    <div class="mt-3">
-        {% for s in s%}
-        <div class="col-2 box m-2 p-3">
-            <img src="{{ s.photo.url  }}" alt="">
-            <h4 class="text">{{ s.name }}</h4>
+    <div class = "mt-3" >
+        <div class="col-11 main_box" style="margin-left:60px ; background-color: #e2d1f1; border-radius: 10px; padding: 20px;">
+            <h3>Teachers</h3>
+            <ul>
+                
+                {% for teacher in teachers %}
+    
+                    <div class="col box m-2 p-3">
+                        <img src="{{teacher.teacher.image.url}}" alt="" style="width: 40px; height: 40px; border-radius: 20px;">                        <h5 class="text" style="display: inline;">{{ teacher.teacher }}</h5>
+                    </div>
+                {% endfor %}
+            </ul>
+        </div><br>
+
+        <div class="col-11 main_box" style="margin-left:60px ; background-color: #e2d1f1; border-radius: 10px; padding: 20px;">
+            <h3>Students</h3>
+            <ul>
+                {% for student in students %}
+                <div class="col box m-2 p-3">
+                    <img src="{{ student.student.photo.url }}" style="width: 40px; height: 40px; border-radius: 20px;">
+                    <h5 class="text" style="display: inline;">{{ student.student.name }}</h5>
+                </div>
+                {% endfor %}
+            </ul>
         </div>
-        {% endfor %}
-    </div>
-    <div class = "mt-3">
-        <h3>Teachers</h3>
-        <ul>
-            {% for teacher in teachers %}
-                <div><h5>{{ teacher.teacher }}</h5></div>
-            {% endfor %}
-        </ul>
-        
-        <h3>Students</h3>
-        <ul>
-            {% for student in students %}
-            <div class="col-2 box m-2 p-3">
-                <img src="{{ student.photo.url }}">
-                <h5 class="text" style="display: inline;">{{ student.student.name }}</h5>
-            </div>
-            {% endfor %}
-        </ul>
     </div>
     
 {% endblock %}

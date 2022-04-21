@@ -9,10 +9,9 @@ class classCreationForm(ModelForm):
         fields = ['className','classSection','classDescription']
 
 class AssignmentCreationForm(ModelForm):
-    deadline = forms.DateTimeField(required=False,widget=forms.DateTimeInput())
     class Meta:
         model = Assignment
-        fields = ['title','marks','deadline','description']
+        fields = ['title','marks','description']
 
 class AssignmentSubmissionForm(ModelForm):
     class Meta:
