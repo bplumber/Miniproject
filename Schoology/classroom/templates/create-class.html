@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+{% block title %}
+ Create Class | Meet Classroom 
+{% endblock %} 
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="row" style="margin: 0 auto;">
+    <div class="col-6" style="padding: 30px; background-color: #e2d1f1; margin-top:20px; border-radius: 10px;">
+    
+    
+    
+        <h2 class="text-center ">Create Class</h2>
+        <br>
+<form method="POST">
+    {% csrf_token %}
+   {{ form|crispy }}
+    
+    <!-- <textarea name="detail " id=" " class="form-control " cols="30 " rows="10 " placeholder="Describe more about the Class " required></textarea> -->
+    <button type="submit " class="btn btn-primary " style="width:100%; margin: 10px auto; background-color: #7C2CC4; border-color: #7C2CC4 " >Create</button>
+</form>
+
+</div>
+<div class="col-6 ">
+    {% load static %}
+    <img src="{% static 'others/create.png' %} " alt=" " style=" width: 400px; height: 400px; left: 818px; margin-top:0.01px; ">
+</div>
+</div>
+{% endblock %}
+<h1>Create Class</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form|crispy}}
+    <div>
+        <input type="submit">
+    </div>
+</form>

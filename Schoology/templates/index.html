@@ -1,0 +1,34 @@
+{% extends 'base/base.html' %} {% load static %} {% block title %} Zooming CLS {% endblock %} {% block content %}
+
+
+<!-- <div class="row justify-content-center mt-5">
+
+    <div class="col-md-7 text-center">
+
+        <h1>Welcome</h1>
+        <br>
+        <br>
+        <h5>Login as,</h5>
+
+        <a role="button" class="btn btn-primary btn-lg" href="">Teacher</a>
+        <a role="button" class="btn btn-primary btn-lg" href="">Student</a>
+
+        <a href="/classroom/teacher.html" id="">Teacher</a>
+        <a href="/classroom/student.html" id="">Student</a> -->
+
+
+<div class="row">
+    <div class="col-6 main_section">
+        <h5>Welcome to</h5>
+        <h1> Schoology </h1>
+        <span>Where you can <strong>Enjoy</strong> <br>Your <strong>Study</strong> </span><br>
+        <hr>
+        <a href="" class="btn btn-info" style="background-color: #7C2CC4; border-color: #7C2CC4;"> Student</a> &nbsp; <a href="" class="btn btn-primary" style="background-color: #7C2CC4; border-color: #7C2CC4;">Teacher</a>
+
+    </div>
+    <div class="col-6">
+        <img src="{% static 'others/landing.png' %}" alt="" style=" width: 600px; height: 600px; left: 818px; margin-top:0.01px;">
+    </div>
+</div>
+
+{% endblock %}

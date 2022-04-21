@@ -1,0 +1,36 @@
+{% extends 'class/base.html' %}
+{% block class_link %}
+<div class="navbar-nav ml-auto">
+    <a class="nav-item nav-link active" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
+    <a class="nav-item nav-link" href="#"><i class="fas fa-file-signature"></i>Assignments</a>
+    <a class="nav-item nav-link" href=""> <i class="fas fa-users"></i> People</a>
+    <a class="nav-item nav-link" href=""  data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
+
+  </div>
+{% endblock %}
+{% block content %}
+<h1>Assignments</h1>
+<br>
+{% if user.is_teacher %}
+  <a href="{% url 'create-assignment' classname %}" style="font-size: 6vh;text-decoration: none;">Create +</a>
+{% endif %}
+{% for assignment in assignments %}
+<div>
+	<div style="font-size: 5vh;"><a href="/class/{{classname}}/assignment/details?title={{assignment.title}}" style="color: black;">{{ assignment.title }}</a></div>
+	{% if assignment.deadline %}
+		<div style="position: absolute; right: 13%;">Due: {{ assignment.deadline }}</div>
+	{% else %}
+		<div style="position: absolute; right: 13%;">No Due Date</div>
+	{% endif %}
+
+	{% if assignment.marks %}
+		<div>Maximum Marks: {{ assignment.marks }}</div>
+	{% else %}
+		<div>No marks Provided.</div>
+	{% endif %}
+	
+    <hr>
+</div>
+    
+{% endfor %}
+{% endblock %}

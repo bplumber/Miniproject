@@ -1,0 +1,36 @@
+{% extends 'class/base.html' %}
+{% load crispy_forms_tags %}
+{% block class_link %}
+<div class="navbar-nav ml-auto">
+    <a class="nav-item nav-link active" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
+    <a class="nav-item nav-link" href="#"><i class="fas fa-file-signature"></i> Files</a>
+    <a class="nav-item nav-link" href=""> <i class="fas fa-users"></i> People</a>
+    <a class="nav-item nav-link" href=""  data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
+
+  </div>
+{% endblock %}
+{% block content %}
+  <div style="margin-top: 5vh;">
+	  <div>
+		<h1>{{ assignmentDetail.title }}</h1>
+		<span>Due: {{ assignmentDetail.deadline }}</span>
+		<p>Description:</p>
+		<p>{{ assignmentDetail.description }}</p>
+	  </div>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div><input type="submit" value="submit"></div>
+    </form>
+  </div>
+  <div>
+	  <div>
+		  {% for i in classWork%}
+		  <span>{{ i.student.name }}</span>
+		  <div>{{i.work}}</div>
+		  <div>{{i.uploaded_at}}</div>
+		  {% endfor %}
+	  </div>
+  </div>
+  
+{% endblock %}

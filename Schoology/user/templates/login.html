@@ -1,0 +1,39 @@
+{% extends 'base/base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="row" style="margin: 0 auto;">
+    <div class="col-6" style="padding:50px; margin-top: 90px;">
+        <h2 class="text-center">Welcome back!</h2>
+        <br>
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-primary" {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            {% endfor %}
+        </div>
+
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend>Login</legend>
+                <div>{{ form|crispy }}</div>
+            </fieldset>
+            <input type="submit" class="btn btn-primary " style="width:100%; margin: 0 auto; background-color: #7C2CC4; border-color: #7C2CC4;" value = 'Login'>
+        </form>
+        <hr>
+        <div class="text-center">
+            Don`t have an account <a href="{% url 'register' %}" style="color: #7C2CC4;">Create here</a>
+        </div>
+    </div>
+    <div class="col-6 mt-5">
+        {% load static %}
+        <img src="{% static 'others/login.png' %}" alt="">
+    </div>
+</div>
+
+{% endblock %}

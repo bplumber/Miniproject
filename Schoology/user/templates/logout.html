@@ -1,0 +1,20 @@
+{% extends 'base/base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="row" style="margin: 0 auto;">
+    <div class="col-6" style="padding:50px; margin-top: 90px;">
+        <h2 class="text-center">Welcome back!</h2>
+        <br>
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-primary" {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            {% endfor %}
+        </div>
+    </div>
+</div>

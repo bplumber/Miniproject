@@ -1,0 +1,54 @@
+{% extends 'class/base.html' %}
+{% block class_link %}
+<div class="navbar-nav ml-auto">
+    <a class="nav-item nav-link active" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
+    <a class="nav-item nav-link" href="#"><i class="fas fa-file-signature"></i> Files</a>
+    <a class="nav-item nav-link" href=""> <i class="fas fa-users"></i> People</a>
+    <a class="nav-item nav-link" href=""  data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
+
+  </div>
+{% endblock %}
+{% block css %}
+.box{
+    box-shadow: 1px 1px 5px 1px #a9a7a7;
+    border-radius:10px;
+    text-align:center;
+}
+.box img{
+    width:100%;
+    border-radius:5%;
+
+}
+{% endblock %}
+
+{% block content %}
+
+    <div class="mt-3">
+        {% for s in s%}
+        <div class="col-2 box m-2 p-3">
+            <img src="{{ s.photo.url  }}" alt="">
+            <h4 class="text">{{ s.name }}</h4>
+        </div>
+        {% endfor %}
+    </div>
+    <div class = "mt-3">
+        <h3>Teachers</h3>
+        <ul>
+            {% for teacher in teachers %}
+                <div><h5>{{ teacher.teacher }}</h5></div>
+            {% endfor %}
+        </ul>
+        
+        <h3>Students</h3>
+        <ul>
+            {% for student in students %}
+            <div class="col-2 box m-2 p-3">
+                <img src="{{ student.photo.url }}">
+                <h5 class="text" style="display: inline;">{{ student.student.name }}</h5>
+            </div>
+            {% endfor %}
+        </ul>
+    </div>
+    
+{% endblock %}
+
