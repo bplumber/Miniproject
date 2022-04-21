@@ -17,11 +17,21 @@ def createClass(request):
         if request.method == 'POST':
             form = classCreationForm(request.POST)
             if form.is_valid():
+                # print(form)
                 form.save()
+
                 classroom = Classroom.objects.get(className = form.cleaned_data['className'])
                 # teacher = request.user.id
+                
                 teacher = Teacher.objects.get(user = request.user)
-                classTeacher = classTeachers(classroom.id,teacher)
+                print("------------------------------------------")
+                print(classroom.id)
+                # classTeacher = classTeachers(classroom.className,teacher)
+                classTeacher = classTeachers(int(classroom.id),teacher)
+
+                print("-------------------------------------")
+                print(teacher)
+                print(classroom, "HEY")
                 print(classTeacher)
                 classTeacher.save()
                 return redirect('dash')
@@ -78,6 +88,7 @@ def inClass(request,name):
 def streamview(request,name):
     
     class_room = Classroom.objects.all().filter(className = name).first()
+    assignments = Assignment.objects.all().filter(classroom = class_room)[:3]
     if inClass(request,name):
         stream = classStream.objects.filter(classroom = class_room.id)
         comments = []
