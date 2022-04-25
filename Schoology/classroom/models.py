@@ -21,7 +21,8 @@ class Classroom(models.Model):
         return self.className
     
     def save(self, *args, **kwargs):
-        self.classCode = self.getCode()
+        if self.classCode == '':
+            self.classCode = self.getCode()
         super(Classroom,self).save(*args,**kwargs)
 
 class classStudents(models.Model):
@@ -37,7 +38,7 @@ class classTeachers(models.Model):
     class Meta:
         unique_together = ('classroom','teacher')
     classroom = models.ForeignKey(Classroom,on_delete=models.CASCADE)
-    teacher = models.ForeignKey(Teacher,on_delete=models.DO_NOTHING)
+    teacher = models.ForeignKey(Teacher,on_delete=models.CASCADE)
 
 class classStream(models.Model):
     classroom = models.ForeignKey(Classroom,on_delete=models.CASCADE)
@@ -68,7 +69,7 @@ class Assignment(models.Model):
         return self.title
     
     class Meta:
-        ordering = ['-deadline']
+        ordering = ['deadline']
 
 def upload_path_handler(instance,filename):
     return instance.assignment.classroom.className + "/"+instance.assignment.title + "/"+filename
@@ -78,6 +79,7 @@ class StudentWork(models.Model):
     student = models.ForeignKey(Student,on_delete=models.DO_NOTHING)
     work = models.FileField(upload_to=upload_path_handler)
     uploaded_at = models.DateTimeField(auto_now=True)
+    plagCheck = models.BooleanField(default=False,null = True, blank = True)
     
     class Meta:
         ordering = ['uploaded_at']

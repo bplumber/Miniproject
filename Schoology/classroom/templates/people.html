@@ -1,31 +1,13 @@
-{% extends 'class/base.html' %}
+{% extends 'classbase.html' %}
 {% block class_link %}
 <div class="navbar-nav ml-auto">
-    <a class="nav-item nav-link active" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
-    <a class="nav-item nav-link" href="#"><i class="fas fa-file-signature"></i> Files</a>
-    <a class="nav-item nav-link" href=""> <i class="fas fa-users"></i> People</a>
-    <a class="nav-item nav-link" href=""  data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
+    <a class="nav-item nav-link" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
+    <a class="nav-item nav-link" href="{% url 'assignment-list' classname %}"><i class="fas fa-file-signature"></i> Assignments</a>
+    <a class="nav-item nav-link active" href="{% url 'people' classname %}"> <i class="fas fa-users"></i> People</a>
+    <a class="nav-item nav-link" href="" data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
 
-  </div>
+</div>
 {% endblock %}
-{% block css %}
-.box{
-    box-shadow: 1px 1px 5px 1px #a9a7a7;
-    border-radius:10px;
-    text-align:center;
-}
-.box img{
-    width:100%;
-    border-radius:5%;
-
-}
-{% endblock %}
-
-<!-- <div class="col-11 main_box" style="margin-left:60px ; background-color: #e2d1f1; border-radius: 10px; padding: 20px;">
-    <h2>{{ class.className }}</h2>
-    <p>{{ class.classDescription }}</p>
-    <h5 style="color:black;">Code : {{ class.classCode }}</h5>
-</div> -->
 
 {% block content %}
 

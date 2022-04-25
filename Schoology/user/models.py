@@ -73,7 +73,7 @@ class Student(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True, related_name='students')
     name = models.CharField(max_length=100, null=True)
-    photo = models.ImageField(null=True, blank=True, upload_to='student/',default = 'student/picture1.jpg')
+    photo = models.ImageField(null=True, blank=True, upload_to='student/',default = 'picture1.jpg')
     phone = models.IntegerField(null=True,blank=True,verbose_name='Phone Number')
     
     def __str__(self):
@@ -81,3 +81,7 @@ class Student(models.Model):
 
     class Meta:
         verbose_name_plural = 'Student'
+
+class Links(models.Model):
+    teacher = models.ForeignKey(Teacher,on_delete=models.CASCADE)
+    url = models.CharField(max_length=500)

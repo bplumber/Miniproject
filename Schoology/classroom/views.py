@@ -4,7 +4,27 @@ from django.contrib import messages
 from user.models import Teacher
 from .forms import *
 from .models import *
+from django.shortcuts import render,redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from matplotlib.style import use
+from user.models import Teacher
+from .forms import *
+from .models import *
+from googlesearch import search
+from bs4 import BeautifulSoup
+import requests
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import os
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 # from somewhere import handle_uploaded_file
+from googlesearch import search
+from bs4 import BeautifulSoup
+import requests
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 def getCode(self):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k = 6))
@@ -18,12 +38,12 @@ def createClass(request):
             form = classCreationForm(request.POST)
             if form.is_valid():
                 form.save()
-                classroom = Classroom.objects.get(className = form.cleaned_data['className'])
-                # teacher = request.user.id
+                classroom = Classroom.objects.get(className = form.cleaned_data['className'])             
                 teacher = Teacher.objects.get(user = request.user)
-                classTeacher = classTeachers(classroom.id,teacher)
-                print(classTeacher)
-                classTeacher.save()
+                ct = classTeachers()
+                ct.classroom = classroom
+                ct.teacher = teacher
+                ct.save()
                 return redirect('dash')
         else:
             form = classCreationForm()
@@ -40,7 +60,7 @@ def joinclass(request):
         try:  
             classroom = Classroom.objects.get(classCode = code)
             classroom.studentCount += 1
-            # classroom.save()
+            classroom.save()
             clsStudent.classroom = classroom
             clsStudent.student = Student.objects.get(user = request.user)
             clsStudent.save()
@@ -78,13 +98,20 @@ def inClass(request,name):
 def streamview(request,name):
     
     class_room = Classroom.objects.all().filter(className = name).first()
+    assignments = Assignment.objects.all().filter(classroom = class_room)[:3]
     if inClass(request,name):
-        stream = classStream.objects.filter(classroom = class_room.id)
-        comments = []
-        for i in stream:
-            comments += streamComment.objects.filter(stream = i)
-        print(type(class_room))
-        return render(request,'classroom.html',{'class':class_room,'stream':stream,'comments':comments,'classname':name})
+        stream = []
+        message = classStream.objects.filter(classroom = class_room.id)
+        for i in message:
+            d = {}
+            c = []
+            d['message'] = i
+            c = streamComment.objects.filter(stream = i)
+            d['comments'] = c
+            d['len'] = len(c)
+            stream.append(d)
+        assignments = Assignment.objects.all().filter(classroom = class_room)[:3]
+        return render(request,'classroom.html',{'class':class_room,'stream':stream,'assignments':assignments,'classname':name})
     else:
         return redirect('home')
 
@@ -125,30 +152,113 @@ def assignments(request,name):
     else:
         return redirect('home')
 
+@login_required
 def assignmentDetails(request,name):
     assignmentTitle = request.GET.get('title')
     class_room = Classroom.objects.all().get(className = name)
     assignmentDetail = Assignment.objects.all().filter(classroom = class_room,title=assignmentTitle).first()
+    
     if assignmentDetail == None:
         return redirect('assignment-list',name)
     if request.method == 'POST':
-        form = AssignmentSubmissionForm(request.POST,request.FILES)
         print(request.FILES)
-        if form.is_valid():
-            stuWork = StudentWork()
-            stuWork.student = Student.objects.get(user = request.user)
-            stuWork.assignment = assignmentDetail
-            stuWork.work = form.cleaned_data['work']
-            stuWork.save()
-            return render(request,'assignment-list.html',{'assignmentDetail':assignmentDetail,'form':form})
-    else:
-        form = AssignmentSubmissionForm()
+        stuWork = StudentWork()
+        stuWork.student = Student.objects.get(user = request.user)
+        stuWork.assignment = assignmentDetail
+        stuWork.work = request.FILES.get('work')
+        qry= stuWork.work.read()
+        # print(x)
+        # qry = file_name.read()
+        # file_name = str(str(file_name).split('mode')[0])[25:-2]
+        user_notes = [qry]
+        user_files = ['file_name']
+        x_searches = []
+        try:
+            for x in search(query=qry, num=10, stop=10, pause=10.0):
+                x_searches.append(x)
+            for x in range(0, len(x_searches) - 1):
+                url = x_searches[x]
+                response = requests.get(url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                all_p = soup.find_all('p')
+                all = ""
+                for i in all_p:
+                    all += str(i.text)
+                user_notes.append(all)
+            user_files.append(url)
+            def vectorize(Text): return TfidfVectorizer().fit_transform(Text).toarray()
+            def similarity(doc1, doc2): return cosine_similarity([doc1, doc2])
+            vectors = vectorize(user_notes)
+            s_vectors = list(zip(user_files, vectors))
+            plagiarism_results = set()
+            student_a = s_vectors[0][0]
+            text_vector_a = s_vectors[0][1]
+            new_vectors = s_vectors.copy()
+            current_index = new_vectors.index((student_a, text_vector_a))
+            del new_vectors[current_index]
+            for student_b, text_vector_b in new_vectors:
+                sim_score = similarity(text_vector_a, text_vector_b)[0][1]
+                student_pair = sorted((student_a, student_b))
+                score = (student_pair[0], student_pair[1], sim_score)
+                plagiarism_results.add(score)
+            mx = 0
+            for i in plagiarism_results:
+                if i[2]>mx:
+                    mx = i[2]
+            print('Accuracy is ' + str((mx)))
+            if mx > 0.5:
+                messages.add_message(request,messages.ERROR,"Plagiarism Detected {}".format(mx))
+                return render(request,'assignment.html',{'assignmentDetail':assignmentDetail,'classname':name})
+            else:
+                stuWork.plagCheck = True
+                stuWork.save()
+                messages.add_message(request,messages.SUCCESS,"Assignment Submitted Successfully")
+                myWork = StudentWork.object.filter(student = Student.object.get(user = request.user),assignment = assignmentDetail)
+                return render(request,'assignment.html',{'assignmentDetail':assignmentDetail,'myWork':myWork,'classname':name})
 
+        except:
+            stuWork.save()
+            messages.add_message(request,messages.SUCCESS,"Assignment Saved Successfully")
+            messages.add_message(request,messages.ERROR,"Too many requests for plagiarism.")
+            return render(request,'assignment.html',{'assignmentDetail':assignmentDetail,'classname':name})
+    
     if request.user.is_student:
-        return render(request,'assignment.html',{'assignmentDetail':assignmentDetail,'form':form,'classname':name})
+        return render(request,'assignment.html',{'assignmentDetail':assignmentDetail,'classname':name})
     else:
         stuwork = StudentWork.objects.filter(assignment = assignmentDetail)
-        return render(request,'assignment.html',{'assignmentDetail':assignmentDetail,'classWork':stuwork,'classname':name})
+        user_files_int = []
+        user_files = []
+        user_notes = []
+        for i in stuwork:
+            filename = i.work.path
+            file = open(filename, encoding="utf-8")
+            user_files_int.append(filename)
+            user_files.append(filename.split('\\')[-1])
+            while True:
+                line = file.readline()
+                if line == '': break
+                user_notes.append(line)
+        def vectorize(Text): return TfidfVectorizer().fit_transform(Text).toarray()
+        def similarity(doc1, doc2): return cosine_similarity([doc1, doc2])
+        vectors = vectorize(user_notes)
+        s_vectors = list(zip(user_files, vectors))
+        plagiarism_results = set()
+        main_results = []
+        for student_a, text_vector_a in s_vectors:
+            new_vectors = s_vectors.copy()
+            current_index = new_vectors.index((student_a, text_vector_a))
+            del new_vectors[current_index]
+            for student_b, text_vector_b in new_vectors:
+                sim_score = similarity(text_vector_a, text_vector_b)[0][1]
+                student_pair = sorted((student_a, student_b))
+                score = (student_pair[0], student_pair[1], sim_score)
+                plagiarism_results.add(score)
+                main_results.append(plagiarism_results)
+        print(main_results)
+        main_results = main_results[0]
+        stuwork = StudentWork.objects.filter(assignment = assignmentDetail)
+        return render(request,'assignment.html',{'assignmentDetail':assignmentDetail,'classWork':stuwork,'classname':name,'main_results' : main_results})
+        
 
 @login_required
 def createStream(request,name):

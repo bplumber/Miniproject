@@ -22,13 +22,11 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-
+            <a class="navbar-brand" href="{% url 'dash' %}">
+                <span>SchooLogy</span>
+            </a>
             <ul class="navbar-nav ml-auto">
-                {% if user.is_authenticated %} {% if user.is_teacher %}
-                <li class="nav-item"><a href="{% url 'dash' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i>  Dashboard</a></li>
-                {% else %}
-                <li class="nav-item"><a href="{% url 'dash' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i>  Dashboard</a></li>
-                {% endif %}
+                {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a href="" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-plus"></i></a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">

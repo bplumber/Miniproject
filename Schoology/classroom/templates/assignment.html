@@ -1,24 +1,51 @@
-{% extends 'class/base.html' %}
+{% extends 'classbase.html' %}
 {% load crispy_forms_tags %}
 {% block class_link %}
 <div class="navbar-nav ml-auto">
-    <a class="nav-item nav-link active" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
-    <a class="nav-item nav-link" href="#"><i class="fas fa-file-signature"></i> Files</a>
-    <a class="nav-item nav-link" href=""> <i class="fas fa-users"></i> People</a>
-    <a class="nav-item nav-link" href=""  data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
-
-  </div>
+  <a class="nav-item nav-link" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
+  <a class="nav-item nav-link active" href="{% url 'assignment-list' classname %}"><i class="fas fa-file-signature"></i> Assignments</a>
+  <a class="nav-item nav-link" href="{% url 'people' classname %}"> <i class="fas fa-users"></i> People</a>
+  <a class="nav-item nav-link" href="" data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
+</div>
 {% endblock %}
 {% block content %}
+
   <div style="margin-top: 5vh;">
 	  <div class="col-6" style="padding: 30px; background-color: #e2d1f1; border-radius: 10px; float: none;margin: 0 auto;">
       <h2>{{ assignmentDetail.title }}</h2>
-      <span>Due: {{ assignmentDetail.deadline }}</span>
-      <p>Description:</p>
-      <p>{{ assignmentDetail.description }}</p>
-      <form method="POST">
+      <span>Due: <strong>{{ assignmentDetail.deadline }}</strong></span>
+      <br>
+      <br>
+      {% if assignmentDetail.description %}
+        <p>Description:</p>
+        <p>{{ assignmentDetail.description }}</p>
+      {% endif %}
+      <form method="POST" enctype="multipart/form-data">
           {% csrf_token %}
-          {{ form|crispy }}
+          <!-- {{ form|crispy }} -->
+          {% if user.is_student %}
+          <label>Your Work</label>&nbsp;
+          <input type="file" name="work">
+          {% endif %}
+          {% if messages %}
+            <div class="messages" style="padding-top: 0.5%;">
+              {% for message in messages %}
+              {% if message.tags == 'error' %}
+              <div class="alert alert-danger" >{{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+              </div>
+			  {% else %}
+			  <div class="alert alert-success" >{{ message }}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+			</div>
+              {% endif %}
+              {% endfor %}
+            </div>
+        {% endif %}
           {% if user.is_teacher %}
           <div><button type="submit " class="btn btn-primary " style="width:100%; margin: 10px auto; background-color: #7C2CC4; border-color: #7C2CC4 " >Check Plagiarism </button></div>{% else %}
           <div><button type="submit " class="btn btn-primary " style="width:100%; margin: 10px auto; background-color: #7C2CC4; border-color: #7C2CC4 " >Submit </button></div>{% endif %}
@@ -28,13 +55,83 @@
   <div>
     {% if user.is_teacher %}
 	  <div class="col-6" style="padding: 30px; background-color: #e2d1f1; border-radius: 10px; float: none;margin: 0 auto;">
-		  {% for i in classWork%}
-		  <span>{{ i.student.name }}</span>
-		  <div>{{i.work}}</div>
-		  <div>{{i.uploaded_at}}</div>
-		  {% endfor %}
-	  </div>{% endif %}
+      <table class="table">
+		<th>Student</th>
+		<th>Submitted at</th>
+        {% for i in classWork%}
+        <tr>
+			<td>{{ i.student.name }}</td>
+			<td>{{i.uploaded_at}}</td>
+        </tr>
+        
+        {% endfor %}
+      </table>
+		  
+	  </div>
+      <br>
+    <div id="customers">
+      <table id="tab_customers" class="table table-striped" >
+          <colgroup>
+              <col width="20%">
+              <col width="20%">
+              <col width="20%">
+              <col width="20%">
+          </colgroup>
+          <thead>         
+              <tr class='warning'>
+                  <th>Student 1</th>
+                  <th>Student 2</th>
+                  <th>Plagirism</th>
+              </tr>
+          </thead>
+          <tbody>
+            {% for i in main_results%}
+            <tr>
+                  <td>{{ i.0 }}</td>
+                  <td>{{ i.1 }}</td>
+                  <td>{{ i.2 }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+  </div>
+  <input type="button" id="btnExport" value="Export" onclick="Export()" />
+    {% else %}
+      {% if myWork %}
+        <div class="col-6" style="padding: 30px; background-color: #e2d1f1; border-radius: 10px; float: none;margin: 0 auto;">
+            <table class="table">
+            <th>Previous Submissions</th>
+            {% for i in myWork%}
+            <tr>
+                <td>{{i.uploaded_at}}</td>
+            </tr>
+            
+            {% endfor %}
+            </table> 
+        </div>
+        {% endif %}
+    {% endif %}
 
   </div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script type="text/javascript">
+        function Export() {
+            html2canvas(document.getElementById('tab_customers'), {
+                onrendered: function (canvas) {
+                    var data = canvas.toDataURL();
+                    var docDefinition = {
+                        content: [{
+                            image: data,
+                            width: 500
+                        }]
+                    };
+                    pdfMake.createPdf(docDefinition).download("Table.pdf");
+                }
+            });
+        }
+    </script>
+  </div>
+
   
 {% endblock %}

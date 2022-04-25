@@ -1,22 +1,24 @@
-{% extends 'class/base.html' %}
+{% extends 'classbase.html' %}
 {% block class_link %}
 <div class="navbar-nav ml-auto">
-    <a class="nav-item nav-link active" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
-    <a class="nav-item nav-link" href="#"><i class="fas fa-file-signature"></i>Assignments</a>
-    <a class="nav-item nav-link" href=""> <i class="fas fa-users"></i> People</a>
+    <a class="nav-item nav-link" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
+    <a class="nav-item nav-link active" href="{% url 'assignment-list' classname%}"><i class="fas fa-file-signature"></i>Assignments</a>
+    <a class="nav-item nav-link" href="{% url 'people' classname%}"> <i class="fas fa-users"></i> People</a>
     <a class="nav-item nav-link" href=""  data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
-
-  </div>
+</div>
 {% endblock %}
 {% block content %}
-<h1>Assignments</h1>
+<h1 style="text-align: center; margin-top: 15px;">Assignments</h1>
 <br>
 {% if user.is_teacher %}
-  <a class="btn btn-primary " " href="{% url 'create-assignment' classname %}" style="font-size: 3vh;text-decoration: none; background-color:#7C2CC4; border-radius: 10px; position: absolute; right: 16%;border-color: #7C2CC4; color: white">Create +</a>
+<div style="margin-bottom: 50px;">
+  <a class="btn btn-primary " " href="{% url 'create-assignment' classname %}" style="font-size: 3vh;text-decoration: none; background-color:#7C2CC4; border-radius: 10px; position: absolute; right: 16%;border-color: #7C2CC4; color: white;">Create +</a>
+  </div>
 {% endif %}
 {% for assignment in assignments %}
-<div class="col-11 main_box" style="margin-left:60px ; margin-top: 50px; background-color: #e2d1f1; border-radius: 10px; padding: 20px; height:160px;">
-	<div style="font-size: 5vh;"><a href="/class/{{classname}}/assignment/details?title={{assignment.title}}" style="color: black;">{{ assignment.title }}</a></div>
+<div class="col-11 main_box" style="margin-left:60px ; margin-top: 10px; background-color: #e2d1f1; border-radius: 10px; padding: 20px; height:115px;">
+	<a href="/class/{{classname}}/assignment/details?title={{assignment.title}}" style="color: black;">
+	<div style="font-size: 5vh;"><span>{{ assignment.title }}</span></div>
 	{% if assignment.deadline %}
 		<div style="position: absolute; right: 5%;">Due: {{ assignment.deadline }}</div>
 	{% else %}
@@ -28,6 +30,7 @@
 	{% else %}
 		<div>No marks Provided.</div>
 	{% endif %}
+	</a>
 </div>
     
 {% endfor %}

@@ -5,9 +5,11 @@ from .models import *
 class ClassroomAdmin(admin.ModelAdmin):
     list_display = ['className','classSection','classCode','studentCount','teacherCount']
 
+class classTeachersAdmin(admin.ModelAdmin):
+    list_display = ['id','classroom','teacher']
 admin.site.register(Classroom,ClassroomAdmin)
 admin.site.register(classStudents)
-admin.site.register(classTeachers)
+admin.site.register(classTeachers,classTeachersAdmin)
 admin.site.register(classStream)
 admin.site.register(streamComment)
 admin.site.register(Assignment)

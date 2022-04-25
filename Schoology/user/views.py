@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import make_password
 from .forms import *
 from .models import Student,Teacher
 from classroom.models import *
+from googlesearch import search
+from classroom.views import createStream
 
 # Create your views here.
 
@@ -44,17 +45,76 @@ def dashboard(request):
     elif request.user.is_teacher:
         classes = classTeachers.objects.all().filter(teacher = Teacher.objects.get(user = request.user))
         for i in classes:
-            classDetails.append((i.classroom,))
+            teachers = classTeachers.objects.all().filter(classroom = i.classroom)
+            classDetails.append((i.classroom,teachers))
     else:
         return redirect('login')
 
     return render(request,'dashboard.html',{'classes':classDetails})
 
+global results
+
 def explore(request):
-    if request.method == 'POST':
-        query = request.POST.get('query')
-        
-    return render(request,'explore.html')
+    if request.user.is_teacher:
+        classDetails = []
+        classes = classTeachers.objects.all().filter(teacher = Teacher.objects.get(user = request.user))
+        for i in classes:
+            classDetails.append(i.classroom)
+        results = []
+        savedLinks = Links.objects.filter(teacher=Teacher.objects.get(user = request.user))
+        if request.method == 'POST':
+            qry = request.POST.get('query')
+            print("qry = {}".format(request.POST))
+            # qry = 'Cloud Computing filetype: pdf'
+            # results = 'A B C D E F G H I J'.split()
+            qry += ' filetype: pdf'
+            for x in search(qry, num=10, stop=10, pause=5):
+                results.append(x)
+            return render(request,'explore.html',{'savedLinks':savedLinks,'results':results,'classes':classDetails})
+        elif request.method == 'GET':
+            val = request.GET.get('val')
+            if val == 'share':
+                classname = request.GET.get('class')
+                stream = classStream()
+                stream.classroom = Classroom.objects.get(className = classname)
+                stream.message = request.GET.get('url')
+                stream.user = request.user
+                stream.save()
+            elif val == 'save':
+                link = Links()
+                link.teacher = Teacher.objects.get(user = request.user)
+                link.url = request.GET.get('url')
+                link.save()
+            return render(request,'explore.html',{'savedLinks':savedLinks,'results':explore.results,'classes':classDetails})
+        else:
+            return render(request,'explore.html',{'savedLinks':savedLinks})
+    else:
+        return redirect('dash')   
+    
+
+def saveresult(request):
+    if request.user.is_authenticated:
+        if request.user.is_teacher:
+            link = Links()
+            link.teacher = Teacher.objects.get(user = request.user)
+            link.url = request.GET.get('url')
+            link.save()
+            return redirect('explore')
+        else:
+            return redirect('dash')
+    else:
+        return redirect('login')
+
+def shareresult(request):
+    classname = request.GET.get('class')
+    stream = classStream()
+    stream.classroom = Classroom.objects.get(className = classname)
+    stream.message = request.GET.get('url')
+    stream.user = request.user
+    stream.save()
+    return redirect('explore')
+
+
 def register(request):
     
     if request.method == 'POST':

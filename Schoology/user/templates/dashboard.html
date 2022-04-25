@@ -1,26 +1,19 @@
-{% extends 'base/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 {% block title %}
 {{ user.student.name }} | Meet Classroom 
 {% endblock %} 
-{% block css %} 
-.s_box{ 
-    position: relative; 
-    box-shadow: 2px 1px 7px 1px #e6e6e6; 
-    border-radius: 10px; background: rgb(34,193,195);
-    background: linear-gradient(72deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 81%); 
-    overflow:hidden; padding:20px; 
-} 
-.s_box img{ 
-    position:absolute; 
-    top:40%; 
-    right:20px; 
-    width:20%; 
-    height:auto; 
-} 
+{% block css %}
+<style>
+    .class-container{
+        display: flex;
+        flex-direction: row; 
+        
+    } 
+</style> 
+
 {% endblock %}
 {% block content %}
-    <!-- <h1>Dashboard</h1> -->
     <div class="col" style="margin-top:30px; margin:0;">
         <div class="messages" style="position: absolute; top:12%; left:70%; z-index: 1;">
             {% for message in messages %}
@@ -32,28 +25,36 @@
     
             {% endfor %}
         </div>
-        <div style="margin-top: 20px">
-            <a href = "{% url 'explore' %}" class = "btn btn-primary" href="">Explore</a>
+        {% if user.is_teacher %}
+            <div style="margin-top: 20px">
+                <a href = "{% url 'explore' %}" class = "btn btn-primary" href="">Explore</a>
+            </div>
+        {% endif %}
+        <div class="row class-container" style="margin-top: 20px">
+            {% for class in classes %}
+            <div class="m-3 class_box" style="padding: 0; width: 30%;">
+                <div>
+                    <img src="{% static 'others/class.jpg' %}" alt="" style="height: 100px;">
+                </div>
+                <div style="padding: 15px;">
+                    <!-- <img src="https://www.pngarts.com/files/11/Avatar-PNG-Transparent-Image.png" class="img" alt="" style="top: 39.5%;"> -->
+        
+                    <h4>{{ class.0.className }}</h4>
+                    <span>{{ class.0.classSection }}</span>
+                    <br>
+                    <a href="{% url 'class' class.0.className %}" style="color: #7C2CC4;"> View Class </a>
+                    <hr>
+                        <h6>Teachers</h6>
+                        {% for i in class.1 %}
+                            <div>{{ i.teacher }}</div>
+                        {% endfor %}
+                </div>
+               
+            </div>
+        
+            {% endfor %}
         </div>
-        {% for class in classes %}
-        <div class="col-md-4 m-4 class_box">
-            <img src="{% static 'others/class.jpg' %}" alt="">
-            <img src="https://www.pngarts.com/files/11/Avatar-PNG-Transparent-Image.png" class="img" alt="">
-    
-            <h4>{{ class.0.className }}</h4>
-            <span>{{ class.0.classSection }}</span>
-            <br>
-            <a href="{% url 'class' class.0.className %}" style="color: #7C2CC4;"> View Class </a>
-            <hr>
-            {% if user.is_student %}
-                <h6>Teachers</h6>
-                {% for i in class.1 %}
-                    <div>{{ i.teacher }}</div>
-                {% endfor %}
-            {% endif %}
-        </div>
-    
-        {% endfor %}
+        
     </div>
     {% endblock %}
 

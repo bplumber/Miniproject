@@ -1,4 +1,4 @@
-{% extends 'class/base.html' %}
+{% extends 'classbase.html' %}
 {% block class_link %}
 
 
@@ -10,8 +10,32 @@
 
 </div>
 
-{% endblock %} {% block css %} .main_box{ border-radius:20px; display: block; height: 100%; left: 0; opacity:; top: 0; width: 100%; background-image: radial-gradient( 25rem 18.75rem ellipse at bottom right,#4285f4, transparent ); overflow:hidden; padding:30px
-100px; position:relative; } .main_box h2{ z-index:3; } .box{ border-radius: 20px; padding: 10px 10px; box-shadow: 1px 1px 2px 1px #dcd5d5; } {% endblock %} {% block content %}
+{% endblock %} 
+{% block css %} 
+<style>
+.main_box{
+    border-radius:20px;
+    display: block; 
+    height: 100%; 
+    left: 0; 
+    opacity:1; 
+    top: 0; 
+    width: 100%; 
+    overflow:hidden; 
+    padding:30px 100px; 
+    position:relative; 
+} 
+.main_box h2{
+    z-index:3; 
+    } 
+    .box{ 
+        border-radius: 20px; 
+        padding: 10px 10px; 
+        box-shadow: 1px 1px 2px 1px #dcd5d5; 
+    }
+</style> 
+{% endblock %} 
+{% block content %}
 <div class="row  mt-3 ">
 
     <div class="messages" style="position: absolute; top:12%; left:70%; z-index: 200;">
@@ -28,7 +52,9 @@
     <div class="col-11 main_box" style="margin-left:60px ; background-color: #e2d1f1; border-radius: 10px; padding: 20px;">
         <h2>{{ class.className }}</h2>
         <p>{{ class.classDescription }}</p>
+        {% if user.is_teacher %}
         <h5 style="color:black;">Code : {{ class.classCode }}</h5>
+        {% endif %}
     </div>
 </div>
 
@@ -41,13 +67,30 @@
             <div class="col-3">
                 <div class="filebox ">
                     <h5>Upcomming Files</h5>
-                    <p> No File yet</p>
-                    <a href="" class="text-right" style="color:#7C2CC4;"> View All </a>
+                    {% if assignments %}
+                        {% for assignment in assignments %}
+                            <div>
+                                <span><strong>{{assignment.title}}</strong></span><br>
+                                {% if assignment.deadline %}
+                                <small>Due: {{assignment.deadline}}</small>
+                                {% else %}
+                                    <small>No due Date</small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p> No File yet</p>
+                        {% endif %}
+                    <a href="{% url 'assignment-list' classname %}" class="text-right" style="color:#7C2CC4;"> View All </a>
                 </div>
             </div>
             <div class="col-9">
                 <div class="sendbox">
-                    <img src="/{{ user.students.photo.url }}" alt="">
+                    {% if user.is_student %}
+                        <img src="{{ user.students.photo.url }}" alt="" style="width: 60px; height: 60px; border-radius: 20px;"><br>    
+                    {% else %}
+                        <img src="{{ user.teachers.image.url }}" alt="" style="width: 60px; height: 60px; border-radius: 20px;"><br>
+                    {% endif %}
                     <form action="{% url 'create-stream' classname%}" method="POST" style="display: flex;">
                         {% csrf_token %}
                         <input type="text" name="post" class="form-control" placeholder="Add Stream" required>
@@ -60,22 +103,21 @@
                     <div class="stream">
                         <div>
                             <div style="display: flex;">
-                                {% if s.user.is_student %}
-                                    <img src="{{ s.user.students.photo.url }}" alt="" style="width: 40px; height: 40px; border-radius: 20px;"><br>    
-                                    <span style="margin-left:10px;"><strong>{{ s.user.students.name }}</strong></span>
+                                {% if s.message.user.is_student %}
+                                    <img src="{{ s.message.user.students.photo.url }}" alt="" style="width: 40px; height: 40px; border-radius: 20px;"><br>    
+                                    <span style="margin-left:10px;"><strong>{{ s.message.user.students.name }}</strong></span>
                                 {% else %}
-                                    <img src="{{ s.user.teachers.image.url }}" alt="" style="width: 40px; height: 40px; border-radius: 20px;"><br>
-                                    <span style="margin-left:10px;"><strong>{{ s.user.teachers.name }}</strong></span>
+                                    <img src="{{ s.message.user.teachers.image.url }}" alt="" style="width: 40px; height: 40px; border-radius: 20px;"><br>
+                                    <span style="margin-left:10px;"><strong>{{ s.message.user.teachers.name }}</strong></span>
                                 {% endif %}
 
-                                <p style="color:gray;position:absolute; right:0">{{ s.time|date:"dS M f a" }}</p>
+                                <p style="color:gray;position:absolute; right:0">{{ s.message.time|date:"dS M f a" }}</p>
                             </div>
                             
-                            <div>{{ s.message }}</div>
+                            <div style="overflow-wrap:break-word;">{{ s.message.message }}</div>
                             
-                            <div class="collapse" id="replies{{s.id}}">
-                                {% for comment in comments %}
-                                {% if s == comment.stream %}
+                            <div class="collapse" id="replies{{s.message.id}}">
+                                {% for comment in s.comments %}
                                     <hr>
                                     {% if comment.user.is_student %}
                                         <div><strong>{{ comment.user.students.name }}</strong></div>
@@ -83,7 +125,6 @@
                                         <div><strong>{{ comment.user.teachers.name }}</strong></div>
                                     {% endif %}
                                     <div style="padding-left: 5%;">{{ comment.reply }}</div>
-                                {% endif %}
                             {% endfor %}
                             </div>
 
@@ -92,20 +133,25 @@
                         </div>
 
                         <hr>
-                        <a href="" data-toggle="collapse" data-target="#replies{{ s.id }}" aria-expanded="false" aria-controls="collapseExample{{ s.id }}"> View Replies </a>
+                        {% if s.len > 0 %}
+                            <a href="" data-toggle="collapse" data-target="#replies{{ s.message.id }}" aria-expanded="false" aria-controls="collapseExample{{ s.s.message.id }}"> View Replies ({{s.len}})</a>
+                        {% else %}
+                            <span style="color: lightgray;"> View Replies ({{s.len}})</span>
+                        {% endif %}
                         &nbsp;&nbsp;&nbsp;
-                        <a href="" data-toggle="collapse" data-target="#collapseExample{{ s.id }}" aria-expanded="false" aria-controls="collapseExample{{ s.id }}"> Reply </a>
+                        <a href="" data-toggle="collapse" data-target="#collapseExample{{ s.message.id }}" aria-expanded="false" aria-controls="collapseExample{{ s.message.id }}"> Reply </a>
                     </div>
                     <!-- Reply box -->
-                    <div class="collapse" id="collapseExample{{ s.id }}" style="margin-left:50px ;">
+                    <div class="collapse" id="collapseExample{{ s.message.id }}" style="margin-left:50px ;">
                         <div class="card card-body">
-                            <form action="/class/{{classname}}/stream/comment?id={{s.id}}" method="POST" style="display: flex;">
+                            <form action="/class/{{classname}}/stream/comment?id={{s.message.id}}" method="POST" style="display: flex;">
                                 {% csrf_token %}
                                 <input type="text" name="comment" class="form-control" placeholder="Add Comment" style="margin-right:3px;">
                                 <button class="btn btn-primary btn-sm" type="submit"> Add Comment </button>
                             </form>
                         </div>
                     </div>
+                    <br>
                     {% endfor %}
                 </div>
 
