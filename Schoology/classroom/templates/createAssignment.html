@@ -5,7 +5,7 @@
     <a class="nav-item nav-link active" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
     <a class="nav-item nav-link" href="{% url 'assignment-list' classname%}"><i class="fas fa-file-signature"></i>Assignments</a>
     <a class="nav-item nav-link" href="{% url 'people' classname%}"> <i class="fas fa-users"></i> People</a>
-    <a class="nav-item nav-link" href=""  data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
+    <a class="nav-item nav-link" href="{% url 'leave' classname %}"  data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
 
   </div>
 {% endblock %}
@@ -16,8 +16,28 @@
     {% csrf_token %}
     {{form|crispy}}
     <label>Deadline</label><br>
-    <input type="datetime-local" style="border:1px solid #ced4da"><br><br>
+    <input id='myLocalDate' type="datetime-local" style="border:1px solid #ced4da" name = 'deadline' onchange=""><br><br>
     <input class ="btn btn-primary" style="background-color: blueviolet; border: blueviolet; width: 100%;" type="submit" value="Create">
 </form> 
+<script>
+      var today = new Date().now();
+      alert(today);
+      // var dd = today.getDate();
+      // var mm = today.getMonth()+1; //January is 0 so need to add 1 to make it 1!
+      // var yyyy = today.getFullYear();
+      // if(dd<10){
+      //   dd='0'+dd
+      // } 
+      // if(mm<10){
+      //   mm='0'+mm
+      // } 
+
+      // today = dd+'-'+mm+'-'+yyyy;
+      // alert(today);
+      // document.getElementById("datefield").setAttribute("min", today);
+      // document.getElementById("datefield").min=today;
+      // document.getElementById("myLocalDate").min = "2022-04-26T01:21:23";
+
+</script>
     
 {% endblock %}

@@ -25,8 +25,13 @@
             <a class="navbar-brand" href="{% url 'dash' %}">
                 <span>SchooLogy</span>
             </a>
-            <ul class="navbar-nav ml-auto">
+            <ul class="nav navbar-nav ml-auto">
                 {% if user.is_authenticated %}
+                {% if user.is_student %}
+                    <li class="nav-item" style="padding: 8px;">Hello {{ request.user.students.name }},</li>
+                    {% else %}
+                    <li class="nav-item" style="padding: 8px;">Hello {{ request.user.teachers.name }},</li>
+                    {% endif %}
                 <li class="nav-item dropdown">
                     <a href="" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-plus"></i></a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">

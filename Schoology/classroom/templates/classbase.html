@@ -55,6 +55,11 @@
                 {% endblock %}
                 <ul class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
+                    {% if user.is_student %}
+                    <span style="padding: 8px;">Hello {{ request.user.students.name }}</span>
+                    {% else %}
+                    <span style="padding: 8px;">Hello {{ request.user.teachers.name }}</span>
+                    {% endif %}
                     <li class="nav-item dropdown">
                         <a href="" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-plus"></i></a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -64,7 +69,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                        <a href="{% url 'logout' %}" class="nav-link btn btn-primary" style="background-color: #7C2CC4; border-color: #7C2CC4; color: white;">Logout</a>
                     </li>
                     {% else %}
                     <li class="nav-item">

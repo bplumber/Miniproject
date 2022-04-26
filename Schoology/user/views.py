@@ -15,22 +15,6 @@ def index(request):
         return redirect('dash')
     return render(request,'index.html')
 
-def login(request):
-    if request.method == 'POST':
-        print(request.POST)
-        email = request.POST['email']
-        passwd = request.POST['passwd']
-        user = authenticate(request,username = email,password = passwd)
-        if user is not None:
-            auth_info ={
-                'username':email,
-                'password':make_password(passwd)
-            }
-            login(request,**auth_info)
-            return redirect('dash')
-        else:
-            return redirect('login')
-    return render(request,'login1.html',{'form':LoginForm})
 
 def dashboard(request):
     classDetails = []
@@ -71,21 +55,24 @@ def explore(request):
             for x in search(qry, num=10, stop=10, pause=5):
                 results.append(x)
             return render(request,'explore.html',{'savedLinks':savedLinks,'results':results,'classes':classDetails})
-        elif request.method == 'GET':
-            val = request.GET.get('val')
-            if val == 'share':
-                classname = request.GET.get('class')
-                stream = classStream()
-                stream.classroom = Classroom.objects.get(className = classname)
-                stream.message = request.GET.get('url')
-                stream.user = request.user
-                stream.save()
-            elif val == 'save':
-                link = Links()
-                link.teacher = Teacher.objects.get(user = request.user)
-                link.url = request.GET.get('url')
-                link.save()
-            return render(request,'explore.html',{'savedLinks':savedLinks,'results':explore.results,'classes':classDetails})
+        # elif request.method == 'GET':
+        #     val = request.GET.get('val')
+        #     if val == 'share':
+        #         classname = request.GET.get('class')
+        #         stream = classStream()
+        #         stream.classroom = Classroom.objects.get(className = classname)
+        #         stream.message = request.GET.get('url')
+        #         stream.user = request.user
+        #         stream.save()
+        #     elif val == 'save':
+        #         link = Links()
+        #         link.teacher = Teacher.objects.get(user = request.user)
+        #         link.url = request.GET.get('url')
+        #         link.save()
+        #     elif val == 'del':
+        #         link = Links.objects.filter(url = request.GET.get('url')).first()
+        #         link.delete()
+        #     return render(request,'explore.html',{'savedLinks':savedLinks,'results':results,'classes':classDetails})
         else:
             return render(request,'explore.html',{'savedLinks':savedLinks})
     else:
@@ -114,6 +101,12 @@ def shareresult(request):
     stream.save()
     return redirect('explore')
 
+def deleteLink(request):
+    if request.user.is_authenticated:
+        link = Links.objects.filter(url = request.GET.get('url')).first()
+        if link:
+            link.delete()
+        return redirect('explore')
 
 def register(request):
     
@@ -137,7 +130,7 @@ def register(request):
                 print('userSaved')
                 user_obj = Teacher(user=user,name = name )
                 user_obj.save()
-                messages.success(request,'Thanks for Singing !!, Login to Continue')
+                messages.success(request,'Thanks for Signing !!, Login to Continue')
                 return redirect ('login')
             else:
                 return render(request,'register.html',{'studentForm':StudentForm(),'teacherForm':teacherForm})
@@ -148,7 +141,7 @@ def register(request):
                 username = studentForm.cleaned_data['email']
                 pass1 = studentForm.cleaned_data['password1']
                 name = studentForm.cleaned_data['name']
-                photo = studentForm.cleaned_data['photo']
+                photo = request.FILES.get('photo')
                 auth_info ={
                     'email':username,
                     'password':make_password(pass1)

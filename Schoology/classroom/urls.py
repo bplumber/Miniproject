@@ -10,4 +10,5 @@ urlpatterns = [
     path('<str:name>/stream/comment',createComment,name = 'comment-stream'),
     path('<str:name>/assignment/details',assignmentDetails,name='assignment-detail'),
     path('<str:name>/assignment/create',createAssignment,name='create-assignment'),
+    path('<str:name>/leave',leaveClass,name='leave')
 ]

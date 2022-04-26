@@ -5,7 +5,7 @@
   <a class="nav-item nav-link" href="{% url 'class' classname %}"><i class="fas fa-bars"></i>  Stream<span class="sr-only">(current)</span></a>
   <a class="nav-item nav-link active" href="{% url 'assignment-list' classname %}"><i class="fas fa-file-signature"></i> Assignments</a>
   <a class="nav-item nav-link" href="{% url 'people' classname %}"> <i class="fas fa-users"></i> People</a>
-  <a class="nav-item nav-link" href="" data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
+  <a class="nav-item nav-link" href="{% url 'leave' classname %}" data-toggle="modal" data-target="#exampleModal">Leave Class <i class="fas fa-sign-out-alt"></i> </a>
 </div>
 {% endblock %}
 {% block content %}
@@ -58,25 +58,26 @@
       <table class="table">
 		<th>Student</th>
 		<th>Submitted at</th>
+    <th>Plagiarism Check</th>
         {% for i in classWork%}
         <tr>
 			<td>{{ i.student.name }}</td>
 			<td>{{i.uploaded_at}}</td>
+      {% if i.plagCheck %}
+        <td>Done</td>
+      {% else %}
+      <td>Not Done</td>
+      {% endif  %}
         </tr>
         
         {% endfor %}
       </table>
 		  
 	  </div>
-      <br>
-    <div id="customers">
+    <br>
+    {% if main_results %}
+    <div id="customers" class="col-6" style="padding: 30px; background-color: #e2d1f1; margin: 0 auto; margin-top:20px; border-radius: 4px; text-align: center; ">
       <table id="tab_customers" class="table table-striped" >
-          <colgroup>
-              <col width="20%">
-              <col width="20%">
-              <col width="20%">
-              <col width="20%">
-          </colgroup>
           <thead>         
               <tr class='warning'>
                   <th>Student 1</th>
@@ -94,8 +95,9 @@
             {% endfor %}
           </tbody>
       </table>
-  </div>
-  <input type="button" id="btnExport" value="Export" onclick="Export()" />
+      <input type="button" id="btnExport" value="Export" onclick="Export()" />
+    </div>
+    {% endif %}
     {% else %}
       {% if myWork %}
         <div class="col-6" style="padding: 30px; background-color: #e2d1f1; border-radius: 10px; float: none;margin: 0 auto;">

@@ -94,9 +94,9 @@
                 </div>
             </form>
         </div>
-        
+        {% if results or savedLinks %}
         <div class="col-12" style="padding: 30px; background-color: #e2d1f1; margin-top:20px; border-radius: 4px; text-align: center; ">
-        {% if results %}
+            {% if results %}
             <table class="table">
                 <thead>
                     <tr>
@@ -109,7 +109,7 @@
                     {% for r in results %}
                     <tr style="text-align: center;">
                         <td><a href="{{r}}">{{r}}</a></td>
-                        <td><a class="btn btn-info" href = "/explore?val=save&url={{r}}">Save</a></td>
+                        <td><a class="btn btn-info" href = "/save?val=save&url={{r}}">Save</a></td>
                         <td><a class="btn btn-primary" data-toggle="modal" data-target="#shareLink">Share</a></td>
                         <div class="modal fade" id="shareLink" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -122,7 +122,7 @@
                                     </div>
                                     <div class="modal-body">
                                         {% for class in classes %}
-                                            <a href = "/explore?val=share&class={{class}}&url={{r}}"><div>{{ class }}</div></a>
+                                            <a href = "/share?val=share&class={{class}}&url={{r}}"><div>{{ class }}</div></a>
                                         {% endfor %}
                         
                                     </div>
@@ -151,7 +151,7 @@
                         <tr>
                             <td><a href={{s.url}}> {{ s.url }}</a></td>
                             <td><a class="btn btn-primary" data-toggle="modal" data-target="#shareLink">Share</a></td>
-                            <td><div class="btn btn-danger">Delete</div></td>
+                            <td><a class="btn btn-danger" href="/delete?val=del&url={{s.url}}" style="color: black;">Delete</a></td>
                             <div class="modal fade" id="shareLink" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
@@ -163,7 +163,7 @@
                                         </div>
                                         <div class="modal-body">
                                             {% for class in classes %}
-                                                <a href = "/explore?val=share&class={{class}}&url={{s.url}}"><div>{{ class }}</div></a>
+                                                <a href = "/share?val=share&class={{class}}&url={{s.url}}"><div>{{ class }}</div></a>
                                             {% endfor %}
                             
                                         </div>
@@ -179,6 +179,7 @@
             {% endif %}
             
         </div>
+        {% endif %}
     </div>
 </div>
 
