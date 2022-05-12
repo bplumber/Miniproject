@@ -30,7 +30,7 @@
             <ul>
                 {% for student in students %}
                 <div class="col box m-2 p-3">
-                    <img src="{{student.students.photo.url}}" style="width: 40px; height: 40px; border-radius: 20px;">
+                    <img src="{{student.student.photo.url}}" style="width: 40px; height: 40px; border-radius: 20px;">
                     <h5 class="text" style="display: inline;">{{ student.student.name }}</h5>
                 </div>
                 {% endfor %}

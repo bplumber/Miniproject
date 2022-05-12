@@ -7,8 +7,16 @@ class ClassroomAdmin(admin.ModelAdmin):
 
 class classTeachersAdmin(admin.ModelAdmin):
     list_display = ['id','classroom','teacher']
+
+class classStudentAdmin(admin.ModelAdmin):
+    list_display = ['id','classroom','student']
+
+# class classTeachersAdmin(admin.ModelAdmin):
+#     list_display = ['id','classroom','teacher']
+
+
 admin.site.register(Classroom,ClassroomAdmin)
-admin.site.register(classStudents)
+admin.site.register(classStudents,classStudentAdmin)
 admin.site.register(classTeachers,classTeachersAdmin)
 admin.site.register(classStream)
 admin.site.register(streamComment)

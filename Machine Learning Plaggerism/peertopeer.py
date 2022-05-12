@@ -7,7 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1TqPjOz3pR0QhLpRINsfUl3-Mu_DD-WzI
 """
 
-! pip install -U scikit-learn
 
 import os
 from sklearn.feature_extraction.text import TfidfVectorizer

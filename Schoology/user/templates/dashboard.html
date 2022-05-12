@@ -60,8 +60,7 @@
             {% if user.is_student %}<img src="{% static 'others/studentback.jpeg' %}">{% else %}
             <img src="{% static 'others/teacherback.jpeg' %}">{% endif %}
             {% if user.is_teacher %}
-            <a class="dropdown-item btn btn-info" style="background-color: #7C2CC4; border-color: #7C2CC4; color: white; width: fit-content; margin: 0 auto;" href="{% url 'create-class' %}">Create Class</a> {% else %}
-            <a class="dropdown-item btn btn-info" style="background-color: #7C2CC4; border-color: #7C2CC4; color: white; width: fit-content; margin: 0 auto;" href="{% url 'join' %}">Join Class</a> {% endif %}
+            <a class="dropdown-item btn btn-info" style="background-color: #7C2CC4; border-color: #7C2CC4; color: white; width: fit-content; margin: 0 auto;" href="{% url 'create-class' %}">Create Class</a>{% endif %}
         </div>
         {% endif %}
         

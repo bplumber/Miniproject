@@ -75,8 +75,8 @@ def upload_path_handler(instance,filename):
     return instance.assignment.classroom.className + "/"+instance.assignment.title + "/"+filename
 
 class StudentWork(models.Model):
-    assignment = models.ForeignKey(Assignment,on_delete=models.DO_NOTHING)
-    student = models.ForeignKey(Student,on_delete=models.DO_NOTHING)
+    assignment = models.ForeignKey(Assignment,on_delete=models.CASCADE)
+    student = models.ForeignKey(Student,on_delete=models.CASCADE)
     work = models.FileField(upload_to=upload_path_handler)
     uploaded_at = models.DateTimeField(auto_now=True)
     plagCheck = models.BooleanField(default=False,null = True, blank = True)

@@ -78,13 +78,16 @@
     {% if main_results %}
     <div id="customers" class="col-6" style="padding: 30px; background-color: #e2d1f1; margin: 0 auto; margin-top:20px; border-radius: 4px; text-align: center; ">
       <table id="tab_customers" class="table table-striped" >
-          <thead>         
+        <tr>
+          <th colspan="3">Plagiarism Report</th>
+        </tr>
+          <!-- <thead>          -->
               <tr class='warning'>
                   <th>Student 1</th>
                   <th>Student 2</th>
                   <th>Plagirism</th>
               </tr>
-          </thead>
+          <!-- </thead> -->
           <tbody>
             {% for i in main_results%}
             <tr>
